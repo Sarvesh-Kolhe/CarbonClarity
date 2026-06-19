@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { calculateCarbonEmissions, EMISSION_FACTORS } from './carbonUtils';
+import { calculateCarbonEmissions, EMISSION_FACTORS, GLOBAL_BENCHMARKS } from './carbonUtils';
 import { CarbonFootprintInputs } from './types';
 
 describe('Carbon Calculation Engine', () => {
@@ -217,5 +217,29 @@ describe('Carbon Calculation Engine', () => {
     });
 
     expect(resFlights.transport).toBe(1750); // 450 + 1300
+  });
+
+  it('should verify the correct structures and targets of GLOBAL_BENCHMARKS references', () => {
+    const sustainableTarget = GLOBAL_BENCHMARKS.find(b => b.label.includes('Sustainable Target'));
+    const worldAvg = GLOBAL_BENCHMARKS.find(b => b.label === 'World Average');
+    
+    expect(sustainableTarget).toBeDefined();
+    expect(sustainableTarget?.value).toBe(2.0);
+    expect(worldAvg).toBeDefined();
+    expect(worldAvg?.value).toBe(4.7);
+  });
+
+  it('should fall back correctly to standard values when diet inputs have some fields partially undefined', () => {
+    const defaultCheck = calculateCarbonEmissions({
+      transport: { petrolCar: 0, dieselCar: 0, electricVehicle: 0, bus: 0, trainMetro: 0, shortHaulFlights: 0, longHaulFlights: 0 },
+      homeEnergy: { electricity: 0, naturalGas: 0, householdSize: 1 },
+      dietLifestyle: {
+        dietType: undefined as any,
+        consumptionLevel: undefined as any
+      }
+    });
+
+    // meat-moderate (1700) + medium (1500) = 3200
+    expect(defaultCheck.dietLifestyle).toBe(3200);
   });
 });

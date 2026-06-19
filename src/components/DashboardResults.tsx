@@ -16,6 +16,7 @@ interface DashboardResultsProps {
   isLoading: boolean;
   onAddPledge: (pledge: Omit<CarbonPledge, 'id' | 'datePledged' | 'status'>) => void;
   activePledges: CarbonPledge[];
+  onGoToPlanner?: () => void;
 }
 
 // Colors for Recharts Categories
@@ -31,7 +32,8 @@ export default function DashboardResults({
   insights, 
   isLoading, 
   onAddPledge,
-  activePledges
+  activePledges,
+  onGoToPlanner
 }: DashboardResultsProps) {
 
   const totalTonnes = breakdown.total / 1000;
@@ -53,9 +55,9 @@ export default function DashboardResults({
   ], [insights.comparisons, totalTonnes]);
 
   // Helper to check if an action item is already pledged
-  const isPledged = (title: string) => {
+  const isPledged = React.useCallback((title: string) => {
     return activePledges.some(p => p.actionTitle === title);
-  };
+  }, [activePledges]);
 
   return (
     <div className="space-y-8 max-w-6xl mx-auto">
@@ -394,6 +396,33 @@ export default function DashboardResults({
             );
           })}
         </div>
+      </section>
+
+      {/* 5. Custom Reduction Plan CTA banner */}
+      <section className="bg-indigo-950 text-white rounded-[32px] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden border border-indigo-900 shadow-xs">
+        <div className="absolute right-0 top-0 pointer-events-none w-32 h-32 bg-indigo-500 opacity-20 blur-xl"></div>
+        <div className="space-y-2">
+          <div className="flex items-center gap-2">
+            <span className="px-2 py-0.5 bg-brand-green-600 text-white text-[9px] font-bold rounded-lg uppercase tracking-wider">NEW</span>
+            <span className="text-xs text-indigo-300 font-bold tracking-widest uppercase">Custom AI Roadmap</span>
+          </div>
+          <h3 className="text-lg font-extrabold font-display tracking-tight text-white flex items-center gap-2">
+            <Sparkles className="h-5.5 w-5.5 text-amber-300 fill-amber-300 animate-pulse animate-duration-1000" />
+            AI-Powered Personalized Reduction Planner
+          </h3>
+          <p className="text-indigo-200 text-xs font-normal max-w-xl leading-relaxed">
+            Need a structured timeline? Configure your target reduction limits (e.g. 25% or 50% lower footprint) and timeline sprints, then have Gemini customize a phased milestone program matching your budget, rent status, or city!
+          </p>
+        </div>
+        {onGoToPlanner && (
+          <button
+            onClick={onGoToPlanner}
+            className="w-full md:w-auto px-5 py-3.5 bg-brand-green-600 hover:bg-brand-green-700 text-white rounded-2xl font-extrabold text-xs tracking-wider transition-all flex items-center justify-center gap-1.5 shrink-0 shadow-xs cursor-pointer hover:scale-102"
+          >
+            <span>Design My Roadmap</span>
+            <ArrowRight className="h-4 w-4" />
+          </button>
+        )}
       </section>
 
     </div>

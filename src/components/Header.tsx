@@ -1,9 +1,9 @@
 import React from 'react';
-import { Globe, Calculator, History, Award, BarChart3 } from 'lucide-react';
+import { Globe, Calculator, History, Award, BarChart3, Sparkles } from 'lucide-react';
 
 interface HeaderProps {
-  activeTab: 'calculate' | 'results' | 'pledges' | 'history';
-  setActiveTab: (tab: 'calculate' | 'results' | 'pledges' | 'history') => void;
+  activeTab: 'calculate' | 'results' | 'pledges' | 'history' | 'ai-plan';
+  setActiveTab: (tab: 'calculate' | 'results' | 'pledges' | 'history' | 'ai-plan') => void;
   hasCalculated: boolean;
   onWarning?: (msg: string) => void;
 }
@@ -72,6 +72,19 @@ export default function Header({ activeTab, setActiveTab, hasCalculated, onWarni
             >
               <BarChart3 className="h-3.5 w-3.5" />
               <span className="hidden xs:inline">Dashboard</span>
+            </button>
+
+            <button
+              id="nav-ai-plan"
+              onClick={() => setActiveTab('ai-plan')}
+              className={`flex items-center gap-1 sm:gap-1.5 px-3 py-2 rounded-xl text-[10px] sm:text-[11px] font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                activeTab === 'ai-plan'
+                  ? 'bg-brand-green-600 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-brand-green-50'
+              }`}
+            >
+              <Sparkles className="h-3.5 w-3.5 font-bold" />
+              <span className="hidden xs:inline">AI Planner</span>
             </button>
 
             <button

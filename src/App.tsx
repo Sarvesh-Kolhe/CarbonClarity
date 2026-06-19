@@ -4,6 +4,7 @@ import CarbonCalculatorForm from './components/CarbonCalculatorForm.tsx';
 import DashboardResults from './components/DashboardResults.tsx';
 import PledgesTracker from './components/PledgesTracker.tsx';
 import HistoryLogView from './components/HistoryLogView.tsx';
+import CustomizedReductionPlan from './components/CustomizedReductionPlan.tsx';
 import { CarbonFootprintInputs, EmissionBreakdown, AIInsightsResponse, FootprintHistoryLog, CarbonPledge } from './types.ts';
 import { calculateCarbonEmissions, GLOBAL_BENCHMARKS } from './carbonUtils.ts';
 import { RefreshCw, Leaf, Sparkles, Smile, ShieldCheck, Globe } from 'lucide-react';
@@ -21,7 +22,7 @@ const ROTATING_CLIMATE_FACTS = [
 ];
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<'calculate' | 'results' | 'pledges' | 'history'>('calculate');
+  const [activeTab, setActiveTab] = useState<'calculate' | 'results' | 'pledges' | 'history' | 'ai-plan'>('calculate');
   const [hasCalculated, setHasCalculated] = useState<boolean>(false);
   const [inputs, setInputs] = useState<CarbonFootprintInputs>({
     transport: { petrolCar: 8000, dieselCar: 0, electricVehicle: 0, bus: 500, trainMetro: 1200, shortHaulFlights: 2, longHaulFlights: 0 },
@@ -78,15 +79,15 @@ export default function App() {
   }, []);
 
   // Sync state helpers
-  const saveLogs = (updatedLogs: FootprintHistoryLog[]) => {
+  const saveLogs = React.useCallback((updatedLogs: FootprintHistoryLog[]) => {
     setHistoryLogs(updatedLogs);
     localStorage.setItem(LOCAL_STORAGE_LOGS_KEY, JSON.stringify(updatedLogs));
-  };
+  }, []);
 
-  const savePledges = (updatedPledges: CarbonPledge[]) => {
+  const savePledges = React.useCallback((updatedPledges: CarbonPledge[]) => {
     setPledges(updatedPledges);
     localStorage.setItem(LOCAL_STORAGE_PLEDGES_KEY, JSON.stringify(updatedPledges));
-  };
+  }, []);
 
   // Rotating facts during processing
   useEffect(() => {
@@ -202,7 +203,7 @@ export default function App() {
   };
 
   // Restoration triggers setting the calculator form values again for iteration
-  const handleRestoreInputs = (log: FootprintHistoryLog) => {
+  const handleRestoreInputs = React.useCallback((log: FootprintHistoryLog) => {
     setInputs(log.inputs);
     setBreakdown(log.breakdown);
     if (log.insights) {
@@ -210,16 +211,16 @@ export default function App() {
     }
     setHasCalculated(true);
     setActiveTab('calculate');
-  };
+  }, []);
 
   // Delete individual timeline log
-  const handleDeleteLog = (id: string) => {
+  const handleDeleteLog = React.useCallback((id: string) => {
     const nextLogs = historyLogs.filter(log => log.id !== id);
     saveLogs(nextLogs);
-  };
+  }, [historyLogs, saveLogs]);
 
   // Pledge addition from dashboard
-  const handleAddPledge = (pledgeBlueprint: Omit<CarbonPledge, 'id' | 'datePledged' | 'status'>) => {
+  const handleAddPledge = React.useCallback((pledgeBlueprint: Omit<CarbonPledge, 'id' | 'datePledged' | 'status'>) => {
     const newPledge: CarbonPledge = {
       ...pledgeBlueprint,
       id: 'pledge_' + Date.now() + Math.random().toString(36).substr(2, 4),
@@ -228,10 +229,10 @@ export default function App() {
     };
     const nextPledges = [newPledge, ...pledges];
     savePledges(nextPledges);
-  };
+  }, [pledges, savePledges]);
 
   // Toggle completed status checkboxes
-  const handleTogglePledgeStatus = (id: string) => {
+  const handleTogglePledgeStatus = React.useCallback((id: string) => {
     const updated = pledges.map(p => {
       if (p.id === id) {
         return { ...p, status: p.status === 'pledged' ? 'completed' as const : 'pledged' as const };
@@ -239,13 +240,13 @@ export default function App() {
       return p;
     });
     savePledges(updated);
-  };
+  }, [pledges, savePledges]);
 
   // Remove individual pledge from ledger
-  const handleRemovePledge = (id: string) => {
+  const handleRemovePledge = React.useCallback((id: string) => {
     const updated = pledges.filter(p => p.id !== id);
     savePledges(updated);
-  };
+  }, [pledges, savePledges]);
 
   return (
     <div className="min-h-screen bg-[#f8fafc] flex flex-col font-sans text-slate-800">
@@ -312,6 +313,16 @@ export default function App() {
                 breakdown={breakdown} 
                 insights={insights} 
                 isLoading={isLoading} 
+                onAddPledge={handleAddPledge}
+                activePledges={pledges}
+                onGoToPlanner={() => setActiveTab('ai-plan')}
+              />
+            )}
+
+            {activeTab === 'ai-plan' && (
+              <CustomizedReductionPlan 
+                inputs={inputs} 
+                breakdown={hasCalculated ? breakdown : null} 
                 onAddPledge={handleAddPledge}
                 activePledges={pledges}
               />

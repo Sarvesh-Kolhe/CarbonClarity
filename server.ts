@@ -15,7 +15,10 @@ async function startServer() {
   app.use((req, res, next) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('X-Frame-Options', 'SAMEORIGIN');
     res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    res.setHeader('Content-Security-Policy', "default-src 'self' https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https:; font-src 'self' data: https://fonts.gstatic.com https:; img-src 'self' data: https:; connect-src 'self' https:; frame-ancestors 'self' https://*.google.com https://*.ai.studio https://*.run.app;");
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
     next();
   });
 
@@ -66,7 +69,8 @@ async function startServer() {
       const breakdown = calculateCarbonEmissions(inputs);
       res.json(breakdown);
     } catch (err: any) {
-      res.status(500).json({ error: err.message });
+      console.error('Calculation API failed:', err);
+      res.status(500).json({ error: 'An unexpected error occurred during emissions calculation.' });
     }
   });
 
@@ -281,6 +285,210 @@ Provide output purely in structured JSON according to the schema rules.`;
           { label: 'Sustainable Target', value: 2.0 }
         ]
       });
+    }
+  });
+
+  // Generate highly customized user-tailored decarbonization plans matching constraints & targets
+  app.post('/api/custom-plan', async (req, res) => {
+    try {
+      const { inputs: crudeInputs, targetReduction, timeframe, categories, constraints } = req.body;
+      
+      const inputs = crudeInputs ? sanitizeInputs(crudeInputs) : null;
+      const breakdown = inputs ? calculateCarbonEmissions(inputs) : null;
+      const totalBaselineKg = breakdown ? breakdown.total : 4500; // default UK average
+
+      const targetPct = Math.min(100, Math.max(5, Number(targetReduction) || 20));
+      const targetSavingsKg = Math.round((totalBaselineKg * targetPct) / 100);
+
+      const targetCats = Array.isArray(categories) && categories.length > 0 
+        ? categories.filter(c => ['transport', 'homeEnergy', 'dietLifestyle'].includes(c))
+        : ['transport', 'homeEnergy', 'dietLifestyle'];
+
+      const userTimeframe = typeof timeframe === 'string' ? timeframe : '1_year';
+      const userConstraints = typeof constraints === 'string' ? constraints.substring(0, 500) : '';
+
+      // Set up the offline backup plan response
+      const getLocalFallbackPlan = () => {
+        const timeLabel = userTimeframe === '3_months' ? '3 Months' : userTimeframe === '3_years' ? '3 Years' : '1 Year';
+        return {
+          summary: `Our offline planning engine drafted a practical strategy to achieve your ${targetPct}% reduction target (~${targetSavingsKg} kg CO₂e) over the next ${timeLabel}. This plan is customized specifically around your lifestyle constraints.`,
+          phases: [
+            {
+              phaseName: "Phase 1: Foundation (Start Immediately)",
+              milestoneGoal: `Prune initial baseline emissions by ${Math.round(targetSavingsKg * 0.4)} kg CO₂e`,
+              steps: [
+                {
+                  title: targetCats.includes('dietLifestyle') ? "Introduce Meat-Free Dinners" : "Begin Energy Standby Pruning",
+                  description: targetCats.includes('dietLifestyle') 
+                    ? "Substitute high-intensity red meat dishes with plant-focused alternatives like beans or tofu twice weekly."
+                    : "Power down background devices, draft-excluders on primary vents, and set boilers to eco parameters.",
+                  impactKg: Math.round(targetSavingsKg * 0.25),
+                  category: targetCats.includes('dietLifestyle') ? "diet" : "homeEnergy",
+                  difficulty: "Easy"
+                },
+                {
+                  title: targetCats.includes('transport') ? "Audit Neighborhood Commutes" : "Conscious Fashion & Tech Upgrades",
+                  description: targetCats.includes('transport')
+                    ? "Group multiple errands into a single drive or substitute trips under 3km with brisk walk routines."
+                    : "Buy only essential clothing or choose certified refurbished options when upgrading gadgets.",
+                  impactKg: Math.round(targetSavingsKg * 0.15),
+                  category: targetCats.includes('transport') ? "transport" : "consumption",
+                  difficulty: "Easy"
+                }
+              ]
+            },
+            {
+              phaseName: "Phase 2: Consolidation (Mid-way milestone)",
+              milestoneGoal: `Consolidate another ${Math.round(targetSavingsKg * 0.35)} kg CO₂e in reductions`,
+              steps: [
+                {
+                  title: targetCats.includes('homeEnergy') ? "Optimize Thermostat Network" : "Local and Organic Sourcing Jackpot",
+                  description: targetCats.includes('homeEnergy')
+                    ? "Adopt a 1-2°C adjustment downwards during central heating periods to limit fuel feedlines."
+                    : "Emphasize locally grown agricultural staples and eliminate food discard rates completely.",
+                  impactKg: Math.round(targetSavingsKg * 0.20),
+                  category: targetCats.includes('homeEnergy') ? "homeEnergy" : "consumption",
+                  difficulty: "Medium"
+                },
+                {
+                  title: targetCats.includes('transport') ? "Leverage Micro-Transit Alternatives" : "Unplug Idle Charging Blocks",
+                  description: targetCats.includes('transport')
+                    ? "Utilize scooters, shared cycles, or suburban trains for active workplace transit loops."
+                    : "Ensure laptop, screen, and utility electronics are routed to a physical master switch strip.",
+                  impactKg: Math.round(targetSavingsKg * 0.15),
+                  category: targetCats.includes('transport') ? "transport" : "general",
+                  difficulty: "Medium"
+                }
+              ]
+            },
+            {
+              phaseName: "Phase 3: Systematic (Long Term Shift)",
+              milestoneGoal: `Complete the final ${Math.round(targetSavingsKg * 0.25)} kg CO₂e target`,
+              steps: [
+                {
+                  title: "Engage In Eco-Friendly Stewardship",
+                  description: "Share decarbonization tricks with friends, review flight footprints before booking, or push for structural municipal cycle paths.",
+                  impactKg: Math.round(targetSavingsKg * 0.25),
+                  category: "general",
+                  difficulty: "Medium"
+                }
+              ]
+            }
+          ],
+          tips: [
+            "Always buy certified high-efficiency whitegoods (A+++ energy tier) when replacements are necessary.",
+            "Take cold cycles for clean laundry; it preserves both filament fabrics and active grid heat loads.",
+            userConstraints.trim().length > 0 
+              ? `Note regarding your constraint: "${userConstraints.substring(0, 100)}..." – this strategy relies strictly on behavior hacks and low-capital shifts to bypass heavy hardware upgrades.`
+              : "Group small packages and choose standard slow delivery for physical parcels to limit delivery truck congestion."
+          ]
+        };
+      };
+
+      const apiKey = process.env.GEMINI_API_KEY;
+      if (!apiKey || apiKey === 'MY_GEMINI_API_KEY' || apiKey.trim() === '') {
+        console.warn('GEMINI_API_KEY is not defined. Returning offline mock custom plan.');
+        return res.json(getLocalFallbackPlan());
+      }
+
+      // Initialize GoogleGenAI
+      const ai = new GoogleGenAI({
+        apiKey: apiKey,
+        httpOptions: {
+          headers: {
+            'User-Agent': 'aistudio-build',
+          }
+        }
+      });
+
+      const catText = targetCats.map(c => {
+        if (c === 'transport') return 'Transportation';
+        if (c === 'homeEnergy') return 'Home Utilities & Heating';
+        if (c === 'dietLifestyle') return 'Diet & Consumable Purchases';
+        return c;
+      }).join(', ');
+
+      const baselineText = breakdown 
+        ? `Baseline Total: ${breakdown.total} kg CO₂e/year (Transport: ${breakdown.transport} kg, Home: ${breakdown.homeEnergy} kg, Diet/Lifestyle: ${breakdown.dietLifestyle} kg)`
+        : `Default Baseline: 4,500 kg CO₂e/year`;
+
+      const promptMsg = `You are a world-class sustainability counselor.
+Create a highly customized, realistic, multi-phase Decarbonization Roadmap to achieve a ${targetPct}% carbon savings reduction.
+
+Baseline Carbon Footprint Details:
+- ${baselineText}
+- Core Targeted Categories Requested: ${catText}
+- Planning Timeframe Duration: ${userTimeframe}
+- User Constraints & Context: "${userConstraints || "None shared"}"
+
+Target Savings Goal: ~${targetSavingsKg} kg CO₂e reduction.
+
+Your task:
+Generate a structured, phased decarbonization program consisting of exactly 3 sequential phases (e.g. Stage 1, Stage 2, Stage 3 appropriate for a ${userTimeframe} timeframe).
+- summary: A custom, warm, motivational executive briefing analyzing how they can achieve this target. Acknowledge and give actionable workarounds for any constraints mentioned: "${userConstraints || "None"}". Max 3 sentences.
+- phases: Create 3 phase objects.
+  - phaseName: Short descriptive name (e.g. "Phase 1: Eco Habits Sprint", "Phase 2: Utility & Commute Tweaks", "Phase 3: Deep Eco Integration")
+  - milestoneGoal: Specific target for this phase (e.g. "Shed 150 kg of transport emissions")
+  - steps: 2 or 3 highly tactical, actionable items per phase that match the designated categories (${targetCats.join(',')}). Provide:
+    - title: Creative and specific action title (e.g., "Install low-flow shower aerators" or "Carpool on Tuesdays")
+    - description: Fully descriptive, actionable instruction explaining exactly 'how' and 'why' this assists.
+    - impactKg: A mathematically logical, estimated annual CO₂e reduction in kg. The sum of all step impactKgs across phases should roughly sum to or exceed the target savings (~${targetSavingsKg} kg).
+    - category: Must be exactly one of: transport, homeEnergy, diet, consumption, general.
+    - difficulty: Easy, Medium, or Hard.
+- tips: Return exactly 3 customized expert tips catering directly to their constraints.
+
+Provide output purely in structured JSON according to the responseSchema rules.`;
+
+      const response = await ai.models.generateContent({
+        model: 'gemini-3.5-flash',
+        contents: promptMsg,
+        config: {
+          responseMimeType: 'application/json',
+          responseSchema: {
+            type: Type.OBJECT,
+            properties: {
+              summary: { type: Type.STRING },
+              phases: {
+                type: Type.ARRAY,
+                items: {
+                  type: Type.OBJECT,
+                  properties: {
+                    phaseName: { type: Type.STRING },
+                    milestoneGoal: { type: Type.STRING },
+                    steps: {
+                      type: Type.ARRAY,
+                      items: {
+                        type: Type.OBJECT,
+                        properties: {
+                          title: { type: Type.STRING },
+                          description: { type: Type.STRING },
+                          impactKg: { type: Type.NUMBER },
+                          category: { type: Type.STRING, description: 'Must be exactly: transport, homeEnergy, diet, consumption, or general' },
+                          difficulty: { type: Type.STRING, description: 'Easy or Medium or Hard' }
+                        },
+                        required: ['title', 'description', 'impactKg', 'category', 'difficulty']
+                      }
+                    }
+                  },
+                  required: ['phaseName', 'milestoneGoal', 'steps']
+                }
+              },
+              tips: {
+                type: Type.ARRAY,
+                items: { type: Type.STRING }
+              }
+            },
+            required: ['summary', 'phases', 'tips']
+          }
+        }
+      });
+
+      const textOutput = response.text?.trim() || '{}';
+      const parsed = JSON.parse(textOutput);
+      res.json(parsed);
+    } catch (err: any) {
+      console.error('Gemini Customized Plan Error:', err);
+      res.status(500).json({ error: 'Failed to generate tailored plan segment. Loading context-aware standard planner.' });
     }
   });
 

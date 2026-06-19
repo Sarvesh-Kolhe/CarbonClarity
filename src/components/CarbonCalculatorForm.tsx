@@ -188,7 +188,7 @@ export default function CarbonCalculatorForm({ onCalculate, isLoading, initialIn
             {/* Petrol Car */}
             <div className="space-y-1.5">
               <label htmlFor="input-petrolCar" className="block text-xs font-bold text-slate-700">
-                Petrol Car <span className="text-slate-400 font-normal">(km/year)</span>
+                Petrol Car <span className="text-slate-500 font-normal">(km/year)</span>
               </label>
               <input
                 id="input-petrolCar"
@@ -198,13 +198,13 @@ export default function CarbonCalculatorForm({ onCalculate, isLoading, initialIn
                 onChange={e => handleTransportChange('petrolCar', e.target.value)}
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-hidden focus:ring-2 focus:ring-brand-green-500 focus:bg-white transition-all font-medium"
               />
-              <p className="text-[11px] text-slate-400 font-normal">Annual kilometres driven in a petrol or hybrid car</p>
+              <p className="text-[11px] text-slate-500 font-normal">Annual kilometres driven in a petrol or hybrid car</p>
             </div>
 
             {/* Diesel Car */}
             <div className="space-y-1.5">
               <label htmlFor="input-dieselCar" className="block text-xs font-bold text-slate-700">
-                Diesel Car <span className="text-slate-400 font-normal">(km/year)</span>
+                Diesel Car <span className="text-slate-500 font-normal">(km/year)</span>
               </label>
               <input
                 id="input-dieselCar"
@@ -214,13 +214,13 @@ export default function CarbonCalculatorForm({ onCalculate, isLoading, initialIn
                 onChange={e => handleTransportChange('dieselCar', e.target.value)}
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-hidden focus:ring-2 focus:ring-brand-green-500 focus:bg-white transition-all font-medium"
               />
-              <p className="text-[11px] text-slate-400 font-normal">Annual kilometres driven in a diesel car</p>
+              <p className="text-[11px] text-slate-500 font-normal">Annual kilometres driven in a diesel car</p>
             </div>
 
             {/* Electric Vehicle */}
             <div className="space-y-1.5">
               <label htmlFor="input-electricVehicle" className="block text-xs font-bold text-slate-700">
-                Electric Vehicle <span className="text-slate-400 font-normal">(km/year)</span>
+                Electric Vehicle <span className="text-slate-500 font-normal">(km/year)</span>
               </label>
               <input
                 id="input-electricVehicle"
@@ -230,13 +230,13 @@ export default function CarbonCalculatorForm({ onCalculate, isLoading, initialIn
                 onChange={e => handleTransportChange('electricVehicle', e.target.value)}
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-hidden focus:ring-2 focus:ring-brand-green-500 focus:bg-white transition-all font-medium"
               />
-              <p className="text-[11px] text-slate-400 font-normal">Annual kilometres driven in a battery electric car</p>
+              <p className="text-[11px] text-slate-500 font-normal">Annual kilometres driven in a battery electric car</p>
             </div>
 
             {/* Bus */}
             <div className="space-y-1.5">
               <label htmlFor="input-bus" className="block text-xs font-bold text-slate-700">
-                Bus <span className="text-slate-400 font-normal">(km/year)</span>
+                Bus <span className="text-slate-500 font-normal">(km/year)</span>
               </label>
               <input
                 id="input-bus"
@@ -246,13 +246,13 @@ export default function CarbonCalculatorForm({ onCalculate, isLoading, initialIn
                 onChange={e => handleTransportChange('bus', e.target.value)}
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-hidden focus:ring-2 focus:ring-brand-green-500 focus:bg-white transition-all font-medium"
               />
-              <p className="text-[11px] text-slate-400 font-normal">Annual kilometres travelled by bus or coach</p>
+              <p className="text-[11px] text-slate-500 font-normal">Annual kilometres travelled by bus or coach</p>
             </div>
 
             {/* Train / Metro */}
             <div className="space-y-1.5">
               <label htmlFor="input-train" className="block text-xs font-bold text-slate-700">
-                Train / Metro <span className="text-slate-400 font-normal">(km/year)</span>
+                Train / Metro <span className="text-slate-500 font-normal">(km/year)</span>
               </label>
               <input
                 id="input-train"
@@ -262,13 +262,13 @@ export default function CarbonCalculatorForm({ onCalculate, isLoading, initialIn
                 onChange={e => handleTransportChange('trainMetro', e.target.value)}
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-hidden focus:ring-2 focus:ring-brand-green-500 focus:bg-white transition-all font-medium"
               />
-              <p className="text-[11px] text-slate-400 font-normal">Annual kilometres by train, metro, or tram</p>
+              <p className="text-[11px] text-slate-500 font-normal">Annual kilometres by train, metro, or tram</p>
             </div>
 
             {/* Short-haul flights */}
             <div className="space-y-1.5">
               <label htmlFor="input-shortFlights" className="block text-xs font-bold text-slate-700">
-                Short-Haul Flights <span className="text-slate-400 font-normal">(flights/year)</span>
+                Short-Haul Flights <span className="text-slate-500 font-normal">(flights/year)</span>
               </label>
               <input
                 id="input-shortFlights"
@@ -278,13 +278,13 @@ export default function CarbonCalculatorForm({ onCalculate, isLoading, initialIn
                 onChange={e => handleTransportChange('shortHaulFlights', e.target.value)}
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-hidden focus:ring-2 focus:ring-brand-green-500 focus:bg-white transition-all font-medium"
               />
-              <p className="text-[11px] text-slate-400 font-normal">Flights under 3 hours (e.g. London to Paris)</p>
+              <p className="text-[11px] text-slate-500 font-normal">Flights under 3 hours (e.g. London to Paris)</p>
             </div>
 
             {/* Long-haul flights */}
             <div className="space-y-1.5 md:col-span-2">
               <label htmlFor="input-longFlights" className="block text-xs font-bold text-slate-700">
-                Long-Haul Flights <span className="text-slate-400 font-normal">(flights/year)</span>
+                Long-Haul Flights <span className="text-slate-500 font-normal">(flights/year)</span>
               </label>
               <input
                 id="input-longFlights"
@@ -294,7 +294,7 @@ export default function CarbonCalculatorForm({ onCalculate, isLoading, initialIn
                 onChange={e => handleTransportChange('longHaulFlights', e.target.value)}
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-hidden focus:ring-2 focus:ring-brand-green-500 focus:bg-white transition-all font-medium"
               />
-              <p className="text-[11px] text-slate-400 font-normal">Flights over 3 hours (e.g. London to New York)</p>
+              <p className="text-[11px] text-slate-500 font-normal">Flights over 3 hours (e.g. London to New York)</p>
             </div>
           </div>
         </div>
@@ -313,7 +313,7 @@ export default function CarbonCalculatorForm({ onCalculate, isLoading, initialIn
             {/* Electricity */}
             <div className="space-y-1.5">
               <label htmlFor="input-electricity" className="block text-xs font-bold text-slate-700">
-                Electricity <span className="text-slate-400 font-normal">(kWh/year)</span>
+                Electricity <span className="text-slate-500 font-normal">(kWh/year)</span>
               </label>
               <input
                 id="input-electricity"
@@ -323,13 +323,13 @@ export default function CarbonCalculatorForm({ onCalculate, isLoading, initialIn
                 onChange={e => handleHomeEnergyChange('electricity', e.target.value)}
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-hidden focus:ring-2 focus:ring-brand-green-500 focus:bg-white transition-all font-medium"
               />
-              <p className="text-[11px] text-slate-400 font-normal">Check your electricity bill bills – UK average is ~3,700 kWh/year</p>
+              <p className="text-[11px] text-slate-500 font-normal">Check your electricity bills – UK average is ~3,700 kWh/year</p>
             </div>
 
             {/* Natural Gas */}
             <div className="space-y-1.5">
               <label htmlFor="input-gas" className="block text-xs font-bold text-slate-700">
-                Natural Gas <span className="text-slate-400 font-normal">(kWh/year)</span>
+                Natural Gas <span className="text-slate-500 font-normal">(kWh/year)</span>
               </label>
               <input
                 id="input-gas"
@@ -339,13 +339,13 @@ export default function CarbonCalculatorForm({ onCalculate, isLoading, initialIn
                 onChange={e => handleHomeEnergyChange('naturalGas', e.target.value)}
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-hidden focus:ring-2 focus:ring-brand-green-500 focus:bg-white transition-all font-medium"
               />
-              <p className="text-[11px] text-slate-400 font-normal">UK average is ~12,000 kWh/year for heating and cooking</p>
+              <p className="text-[11px] text-slate-500 font-normal">UK average is ~12,000 kWh/year for heating and cooking</p>
             </div>
 
             {/* Household Size */}
             <div className="space-y-1.5 md:col-span-2">
               <label htmlFor="input-householdSize" className="block text-xs font-bold text-slate-700">
-                Household Size <span className="text-slate-400 font-normal">(people)</span>
+                Household Size <span className="text-slate-500 font-normal">(people)</span>
               </label>
               <input
                 id="input-householdSize"
@@ -355,7 +355,7 @@ export default function CarbonCalculatorForm({ onCalculate, isLoading, initialIn
                 onChange={e => handleHomeEnergyChange('householdSize', e.target.value)}
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-hidden focus:ring-2 focus:ring-brand-green-500 focus:bg-white transition-all font-medium"
               />
-              <p className="text-[11px] text-slate-400 font-normal">Number of people sharing your home (home emissions split equally)</p>
+              <p className="text-[11px] text-slate-500 font-normal">Number of people sharing your home (home emissions split equally)</p>
             </div>
           </div>
         </div>
@@ -370,8 +370,8 @@ export default function CarbonCalculatorForm({ onCalculate, isLoading, initialIn
             </div>
           </div>
 
-          <div className="space-y-4">
-            <span className="block text-xs font-bold text-slate-700">Diet Type</span>
+          <fieldset className="space-y-4">
+            <legend className="block text-xs font-bold text-slate-700">Diet Type</legend>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               
               {/* Meat Heavy */}
@@ -462,7 +462,7 @@ export default function CarbonCalculatorForm({ onCalculate, isLoading, initialIn
                 </div>
               </label>
             </div>
-          </div>
+          </fieldset>
 
           {/* Consumption Spending Level */}
           <div className="space-y-1.5 pt-2">
@@ -482,7 +482,7 @@ export default function CarbonCalculatorForm({ onCalculate, isLoading, initialIn
                 ▼
               </div>
             </div>
-            <p className="text-[11px] text-slate-400 font-normal">How much do you typically spend on newer goods (clothes, gadgets, decor)?</p>
+            <p className="text-[11px] text-slate-500 font-normal">How much do you typically spend on newer goods (clothes, gadgets, decor)?</p>
           </div>
         </div>
 
