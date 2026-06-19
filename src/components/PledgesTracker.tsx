@@ -133,6 +133,7 @@ export default function PledgesTracker({ pledges, onTogglePledgeStatus, onRemove
                           onClick={() => onTogglePledgeStatus(pledge.id)}
                           className="mt-0.5 text-slate-400 hover:text-brand-green-600 scale-110 cursor-pointer"
                           title="Mark action as completed"
+                          aria-label={`Mark commitment "${pledge.actionTitle}" as completed`}
                         >
                           <Circle className="h-5 w-5" />
                         </button>
@@ -153,6 +154,7 @@ export default function PledgesTracker({ pledges, onTogglePledgeStatus, onRemove
                           onClick={() => onRemovePledge(pledge.id)}
                           className="text-slate-400 hover:text-red-600 p-1 group-hover:opacity-100 opacity-20 sm:opacity-0 transition-opacity cursor-pointer"
                           title="Discard pledge target"
+                          aria-label={`Remove commitment "${pledge.actionTitle}"`}
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
@@ -184,6 +186,7 @@ export default function PledgesTracker({ pledges, onTogglePledgeStatus, onRemove
                           onClick={() => onTogglePledgeStatus(pledge.id)}
                           className="mt-0.5 text-brand-green-600 hover:text-slate-400 scale-110 cursor-pointer"
                           title="Revert back to ongoing commitments"
+                          aria-label={`Revert achievement "${pledge.actionTitle}" back to active commitment list`}
                         >
                           <CheckCircle className="h-5 w-5" />
                         </button>
@@ -204,6 +207,7 @@ export default function PledgesTracker({ pledges, onTogglePledgeStatus, onRemove
                           onClick={() => onRemovePledge(pledge.id)}
                           className="text-slate-400 hover:text-red-300 p-1 group-hover:opacity-100 opacity-20 sm:opacity-0 transition-opacity cursor-pointer"
                           title="Discard achievement log"
+                          aria-label={`Remove achievement "${pledge.actionTitle}"`}
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>

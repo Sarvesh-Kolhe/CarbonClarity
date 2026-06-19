@@ -58,6 +58,7 @@ export default function HistoryLogView({ logs, onDeleteLog, onRestoreInputs }: H
             id="btn-export-csv"
             onClick={exportHistoryToCSV}
             className="px-4 py-2.5 text-[10px] font-bold uppercase tracking-wider bg-white text-slate-700 rounded-full border border-brand-green-100 hover:bg-[#fafaf6] flex items-center gap-1.5 transition-colors cursor-pointer"
+            aria-label="Export carbon calculation history as CSV file report"
           >
             <Download className="h-4 w-4" />
             <span>Export CSV Report</span>
@@ -197,6 +198,7 @@ export default function HistoryLogView({ logs, onDeleteLog, onRestoreInputs }: H
                           onClick={() => onRestoreInputs(log)}
                           className="px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-brand-green-700 bg-[#f5f5f0] border border-brand-green-150 hover:bg-brand-green-100 transition-colors cursor-pointer text-center"
                           title="Restore inputs to modification board"
+                          aria-label={`Load data set from ${new Date(log.date).toLocaleDateString()} back into input fields`}
                         >
                           Load
                         </button>
@@ -205,6 +207,7 @@ export default function HistoryLogView({ logs, onDeleteLog, onRestoreInputs }: H
                           onClick={() => onDeleteLog(log.id)}
                           className="px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-red-700 bg-red-50 hover:bg-red-100 transition-colors cursor-pointer text-center"
                           title="Remove from history log"
+                          aria-label={`Delete entry from ${new Date(log.date).toLocaleDateString()}`}
                         >
                           Delete
                         </button>

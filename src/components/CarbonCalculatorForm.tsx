@@ -150,6 +150,7 @@ export default function CarbonCalculatorForm({ onCalculate, isLoading, initialIn
             type="button" 
             onClick={() => applyPreset('green')}
             className="px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#f0f0ea] border border-[#d2d2c2] text-brand-green-600 hover:bg-brand-green-100 transition-colors cursor-pointer"
+            aria-label="Load Low-Impact ecofriendly lifestyle preset"
           >
             🌱 Low-Impact
           </button>
@@ -157,6 +158,7 @@ export default function CarbonCalculatorForm({ onCalculate, isLoading, initialIn
             type="button" 
             onClick={() => applyPreset('average')}
             className="px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-[#e5e5dc] border border-[#c6c6b4] text-slate-700 hover:bg-[#d8d8ce] transition-colors cursor-pointer"
+            aria-label="Load World Average normal consumption lifestyle preset"
           >
             ⚖️ World Avg
           </button>
@@ -164,6 +166,7 @@ export default function CarbonCalculatorForm({ onCalculate, isLoading, initialIn
             type="button" 
             onClick={() => applyPreset('high')}
             className="px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100 transition-colors cursor-pointer"
+            aria-label="Load High Intensity consumer lifestyle preset"
           >
             ✈️ High Intensity
           </button>
@@ -368,7 +371,7 @@ export default function CarbonCalculatorForm({ onCalculate, isLoading, initialIn
           </div>
 
           <div className="space-y-4">
-            <label className="block text-xs font-bold text-slate-700">Diet Type</label>
+            <span className="block text-xs font-bold text-slate-700">Diet Type</span>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               
               {/* Meat Heavy */}

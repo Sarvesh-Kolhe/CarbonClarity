@@ -374,6 +374,7 @@ export default function DashboardResults({
                         ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
                         : 'bg-brand-green-50 text-brand-green-700 hover:bg-brand-green-100 border border-brand-green-200'
                     }`}
+                    aria-label={hasPledged ? `Pledged action: ${action.title}` : `Pledge to commit to action: ${action.title}`}
                   >
                     {hasPledged ? (
                       <>

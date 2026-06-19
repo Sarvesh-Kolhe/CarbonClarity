@@ -11,20 +11,57 @@ async function startServer() {
   const app = express();
   const PORT = 3000;
 
+  // Modern response security/hygiene headers
+  app.use((req, res, next) => {
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('X-XSS-Protection', '1; mode=block');
+    res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+    next();
+  });
+
   // Middleware
-  app.use(express.json());
+  app.use(express.json({ limit: '10kb' })); // Enforce size limits to prevent body-parsing DoS
 
   // API endpoints
   app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
   });
 
+  // Helper to strictly sanitize inputs
+  function sanitizeInputs(inputs: any) {
+    if (!inputs) return null;
+    return {
+      transport: {
+        petrolCar: Math.min(1000000, Math.max(0, Number(inputs.transport?.petrolCar) || 0)),
+        dieselCar: Math.min(1000000, Math.max(0, Number(inputs.transport?.dieselCar) || 0)),
+        electricVehicle: Math.min(1000000, Math.max(0, Number(inputs.transport?.electricVehicle) || 0)),
+        bus: Math.min(1000000, Math.max(0, Number(inputs.transport?.bus) || 0)),
+        trainMetro: Math.min(1000000, Math.max(0, Number(inputs.transport?.trainMetro) || 0)),
+        shortHaulFlights: Math.min(1000, Math.max(0, Number(inputs.transport?.shortHaulFlights) || 0)),
+        longHaulFlights: Math.min(1000, Math.max(0, Number(inputs.transport?.longHaulFlights) || 0)),
+      },
+      homeEnergy: {
+        electricity: Math.min(1000000, Math.max(0, Number(inputs.homeEnergy?.electricity) || 0)),
+        naturalGas: Math.min(1000000, Math.max(0, Number(inputs.homeEnergy?.naturalGas) || 0)),
+        householdSize: Math.min(100, Math.max(1, Number(inputs.homeEnergy?.householdSize) || 1)),
+      },
+      dietLifestyle: {
+        dietType: typeof inputs.dietLifestyle?.dietType === 'string' ? inputs.dietLifestyle.dietType.substring(0, 30) : 'meat-moderate',
+        consumptionLevel: typeof inputs.dietLifestyle?.consumptionLevel === 'string' ? inputs.dietLifestyle.consumptionLevel.substring(0, 30) : 'medium',
+      }
+    };
+  }
+
   // Calculate carbon emissions instantly via science-backed equations
   app.post('/api/calculate', (req, res) => {
     try {
-      const inputs = req.body;
-      if (!inputs || !inputs.transport || !inputs.homeEnergy || !inputs.dietLifestyle) {
+      const crudeInputs = req.body;
+      if (!crudeInputs || !crudeInputs.transport || !crudeInputs.homeEnergy || !crudeInputs.dietLifestyle) {
         return res.status(400).json({ error: 'Missing lifestyle category inputs' });
+      }
+      const inputs = sanitizeInputs(crudeInputs);
+      if (!inputs) {
+        return res.status(400).json({ error: 'Could not sanitize input categories' });
       }
       const breakdown = calculateCarbonEmissions(inputs);
       res.json(breakdown);
@@ -36,9 +73,13 @@ async function startServer() {
   // Generate deep-dive AI actions & insights using Google Gemini
   app.post('/api/insights', async (req, res) => {
     try {
-      const inputs = req.body;
-      if (!inputs || !inputs.transport || !inputs.homeEnergy || !inputs.dietLifestyle) {
+      const crudeInputs = req.body;
+      if (!crudeInputs || !crudeInputs.transport || !crudeInputs.homeEnergy || !crudeInputs.dietLifestyle) {
         return res.status(400).json({ error: 'Missing inputs for analysis' });
+      }
+      const inputs = sanitizeInputs(crudeInputs);
+      if (!inputs) {
+        return res.status(400).json({ error: 'Could not sanitize input categories' });
       }
 
       // 1. Calculate the deterministic carbon footprint

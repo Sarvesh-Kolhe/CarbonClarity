@@ -41,20 +41,23 @@ export function calculateCarbonEmissions(inputs: CarbonFootprintInputs): Emissio
   const homeEnergy = (inputs?.homeEnergy || {}) as Partial<CarbonFootprintInputs['homeEnergy']>;
   const dietLifestyle = (inputs?.dietLifestyle || {}) as Partial<CarbonFootprintInputs['dietLifestyle']>;
 
+  // Helper to ensure numeric non-negative values
+  const clampNum = (val: any) => Math.max(0, Number(val) || 0);
+
   // 1. Calculate Transport Emissions
   const transportEmissions = 
-    ((Number(transport.petrolCar) || 0) * EMISSION_FACTORS.petrolCar) +
-    ((Number(transport.dieselCar) || 0) * EMISSION_FACTORS.dieselCar) +
-    ((Number(transport.electricVehicle) || 0) * EMISSION_FACTORS.electricVehicle) +
-    ((Number(transport.bus) || 0) * EMISSION_FACTORS.bus) +
-    ((Number(transport.trainMetro) || 0) * EMISSION_FACTORS.trainMetro) +
-    ((Number(transport.shortHaulFlights) || 0) * EMISSION_FACTORS.shortHaulFlight) +
-    ((Number(transport.longHaulFlights) || 0) * EMISSION_FACTORS.longHaulFlight);
+    (clampNum(transport.petrolCar) * EMISSION_FACTORS.petrolCar) +
+    (clampNum(transport.dieselCar) * EMISSION_FACTORS.dieselCar) +
+    (clampNum(transport.electricVehicle) * EMISSION_FACTORS.electricVehicle) +
+    (clampNum(clampNum(transport.bus)) * EMISSION_FACTORS.bus) +
+    (clampNum(transport.trainMetro) * EMISSION_FACTORS.trainMetro) +
+    (clampNum(transport.shortHaulFlights) * EMISSION_FACTORS.shortHaulFlight) +
+    (clampNum(transport.longHaulFlights) * EMISSION_FACTORS.longHaulFlight);
 
   // 2. Calculate Home Energy Emissions (Split by household size)
-  const householdSize = Math.max(1, Number(homeEnergy.householdSize) || 1);
-  const homeElectricityEmissions = ((Number(homeEnergy.electricity) || 0) * EMISSION_FACTORS.electricity);
-  const homeGasEmissions = ((Number(homeEnergy.naturalGas) || 0) * EMISSION_FACTORS.naturalGas);
+  const householdSize = Math.max(1, clampNum(homeEnergy.householdSize) || 1);
+  const homeElectricityEmissions = (clampNum(homeEnergy.electricity) * EMISSION_FACTORS.electricity);
+  const homeGasEmissions = (clampNum(homeEnergy.naturalGas) * EMISSION_FACTORS.naturalGas);
   const homeEnergyEmissions = (homeElectricityEmissions + homeGasEmissions) / householdSize;
 
   // 3. Diet and Lifestyle Emissions

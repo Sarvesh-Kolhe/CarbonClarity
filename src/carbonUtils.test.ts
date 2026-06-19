@@ -147,4 +147,75 @@ describe('Carbon Calculation Engine', () => {
     // falls back on meat-moderate (1700) and medium consumption (1500) = 3200
     expect(result.dietLifestyle).toBe(3200);
   });
+
+  it('should correctly clamp negative inputs for all transport distance metrics', () => {
+    const negativeInputs: CarbonFootprintInputs = {
+      transport: {
+        petrolCar: -500,
+        dieselCar: -1200,
+        electricVehicle: -150,
+        bus: -20,
+        trainMetro: -80,
+        shortHaulFlights: -5,
+        longHaulFlights: -1,
+      },
+      homeEnergy: {
+        electricity: -4000,
+        naturalGas: -10000,
+        householdSize: 2,
+      },
+      dietLifestyle: {
+        dietType: 'vegan',
+        consumptionLevel: 'low',
+      },
+    };
+
+    const result = calculateCarbonEmissions(negativeInputs);
+    // Negative values should be calculated as 0
+    expect(result.transport).toBe(0);
+    expect(result.homeEnergy).toBe(0);
+    expect(result.dietLifestyle).toBe(600 + 600); // vegan + low = 1200
+    expect(result.total).toBe(1200);
+  });
+
+  it('should calculate correct emissions for distinct diet configurations', () => {
+    const baseInputs: CarbonFootprintInputs = {
+      transport: { petrolCar: 0, dieselCar: 0, electricVehicle: 0, bus: 0, trainMetro: 0, shortHaulFlights: 0, longHaulFlights: 0 },
+      homeEnergy: { electricity: 0, naturalGas: 0, householdSize: 1 },
+      dietLifestyle: { dietType: 'meat-heavy', consumptionLevel: 'low' }
+    };
+
+    const resMeatHeavy = calculateCarbonEmissions(baseInputs);
+    expect(resMeatHeavy.dietLifestyle).toBe(EMISSION_FACTORS.diet['meat-heavy'] + EMISSION_FACTORS.consumption['low']);
+
+    const resVegetarian = calculateCarbonEmissions({
+      ...baseInputs,
+      dietLifestyle: { dietType: 'vegetarian', consumptionLevel: 'high' }
+    });
+    expect(resVegetarian.dietLifestyle).toBe(EMISSION_FACTORS.diet['vegetarian'] + EMISSION_FACTORS.consumption['high']);
+
+    const resMeatModerate = calculateCarbonEmissions({
+      ...baseInputs,
+      dietLifestyle: { dietType: 'meat-moderate', consumptionLevel: 'medium' }
+    });
+    expect(resMeatModerate.dietLifestyle).toBe(EMISSION_FACTORS.diet['meat-moderate'] + EMISSION_FACTORS.consumption['medium']);
+  });
+
+  it('should correctly sum miscellaneous flight segments', () => {
+    const resFlights = calculateCarbonEmissions({
+      transport: {
+        petrolCar: 0,
+        dieselCar: 0,
+        electricVehicle: 0,
+        bus: 0,
+        trainMetro: 0,
+        shortHaulFlights: 3, // 3 * 150 = 450
+        longHaulFlights: 2,  // 2 * 650 = 1300
+      },
+      homeEnergy: { electricity: 0, naturalGas: 0, householdSize: 1 },
+      dietLifestyle: { dietType: 'vegan', consumptionLevel: 'low' }
+    });
+
+    expect(resFlights.transport).toBe(1750); // 450 + 1300
+  });
 });

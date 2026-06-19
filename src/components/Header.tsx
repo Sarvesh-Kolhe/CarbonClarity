@@ -15,7 +15,12 @@ export default function Header({ activeTab, setActiveTab, hasCalculated, onWarni
         <div className="flex justify-between items-center h-20">
           
           {/* Brand Logo and Slogan */}
-          <div className="flex items-center space-x-3 cursor-pointer" onClick={() => setActiveTab('calculate')}>
+          <button 
+            type="button"
+            className="flex items-center space-x-3 cursor-pointer text-left focus:outline-hidden" 
+            onClick={() => setActiveTab('calculate')}
+            aria-label="CarbonClarity Home"
+          >
             <div className="w-11 h-11 bg-brand-green-600 rounded-full flex items-center justify-center text-white serif italic text-xl shadow-xs transition-transform hover:scale-105">
               C
             </div>
@@ -27,7 +32,7 @@ export default function Header({ activeTab, setActiveTab, hasCalculated, onWarni
                 Understand • Track • Reduce
               </p>
             </div>
-          </div>
+          </button>
 
           {/* Tab Navigation Menu */}
           <nav className="flex space-x-1 sm:space-x-3">
