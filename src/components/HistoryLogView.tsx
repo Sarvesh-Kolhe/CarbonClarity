@@ -14,7 +14,7 @@ interface HistoryLogViewProps {
 export default function HistoryLogView({ logs, onDeleteLog, onRestoreInputs }: HistoryLogViewProps) {
   
   // Format history for chart
-  const chartData = [...logs]
+  const chartData = React.useMemo(() => [...logs]
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
     .map(log => ({
       date: new Date(log.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
@@ -22,7 +22,7 @@ export default function HistoryLogView({ logs, onDeleteLog, onRestoreInputs }: H
       transport: parseFloat((log.breakdown.transport / 1000).toFixed(2)),
       homeEnergy: parseFloat((log.breakdown.homeEnergy / 1000).toFixed(2)),
       dietLifestyle: parseFloat((log.breakdown.dietLifestyle / 1000).toFixed(2)),
-    }));
+    })), [logs]);
 
   // Download logic mapping state to a simple clean text file/CSV
   const exportHistoryToCSV = () => {

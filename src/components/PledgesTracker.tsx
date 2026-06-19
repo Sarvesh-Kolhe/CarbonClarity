@@ -11,15 +11,15 @@ interface PledgesTrackerProps {
 
 export default function PledgesTracker({ pledges, onTogglePledgeStatus, onRemovePledge, onGoToDashboard }: PledgesTrackerProps) {
   
-  const activePledges = pledges.filter(p => p.status === 'pledged');
-  const completedPledges = pledges.filter(p => p.status === 'completed');
+  const activePledges = React.useMemo(() => pledges.filter(p => p.status === 'pledged'), [pledges]);
+  const completedPledges = React.useMemo(() => pledges.filter(p => p.status === 'completed'), [pledges]);
 
-  const totalCarbonAverted = completedPledges.reduce((sum, p) => sum + p.impactKg, 0);
-  const potentialCarbonAverted = activePledges.reduce((sum, p) => sum + p.impactKg, 0);
+  const totalCarbonAverted = React.useMemo(() => completedPledges.reduce((sum, p) => sum + p.impactKg, 0), [completedPledges]);
+  const potentialCarbonAverted = React.useMemo(() => activePledges.reduce((sum, p) => sum + p.impactKg, 0), [activePledges]);
   
-  const completionPercentage = pledges.length > 0
+  const completionPercentage = React.useMemo(() => pledges.length > 0
     ? Math.round((completedPledges.length / pledges.length) * 100)
-    : 0;
+    : 0, [pledges, completedPledges]);
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto">

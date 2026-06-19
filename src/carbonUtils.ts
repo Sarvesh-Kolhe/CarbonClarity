@@ -36,27 +36,30 @@ export const EMISSION_FACTORS = {
  * Calculates current carbon emissions from lifestyle inputs
  */
 export function calculateCarbonEmissions(inputs: CarbonFootprintInputs): EmissionBreakdown {
-  const { transport, homeEnergy, dietLifestyle } = inputs;
+  // Ensure we have protective defaults if inputs are undefined
+  const transport = (inputs?.transport || {}) as Partial<CarbonFootprintInputs['transport']>;
+  const homeEnergy = (inputs?.homeEnergy || {}) as Partial<CarbonFootprintInputs['homeEnergy']>;
+  const dietLifestyle = (inputs?.dietLifestyle || {}) as Partial<CarbonFootprintInputs['dietLifestyle']>;
 
   // 1. Calculate Transport Emissions
   const transportEmissions = 
-    (transport.petrolCar * EMISSION_FACTORS.petrolCar) +
-    (transport.dieselCar * EMISSION_FACTORS.dieselCar) +
-    (transport.electricVehicle * EMISSION_FACTORS.electricVehicle) +
-    (transport.bus * EMISSION_FACTORS.bus) +
-    (transport.trainMetro * EMISSION_FACTORS.trainMetro) +
-    (transport.shortHaulFlights * EMISSION_FACTORS.shortHaulFlight) +
-    (transport.longHaulFlights * EMISSION_FACTORS.longHaulFlight);
+    ((Number(transport.petrolCar) || 0) * EMISSION_FACTORS.petrolCar) +
+    ((Number(transport.dieselCar) || 0) * EMISSION_FACTORS.dieselCar) +
+    ((Number(transport.electricVehicle) || 0) * EMISSION_FACTORS.electricVehicle) +
+    ((Number(transport.bus) || 0) * EMISSION_FACTORS.bus) +
+    ((Number(transport.trainMetro) || 0) * EMISSION_FACTORS.trainMetro) +
+    ((Number(transport.shortHaulFlights) || 0) * EMISSION_FACTORS.shortHaulFlight) +
+    ((Number(transport.longHaulFlights) || 0) * EMISSION_FACTORS.longHaulFlight);
 
   // 2. Calculate Home Energy Emissions (Split by household size)
-  const householdSize = Math.max(1, homeEnergy.householdSize || 1);
-  const homeElectricityEmissions = (homeEnergy.electricity * EMISSION_FACTORS.electricity);
-  const homeGasEmissions = (homeEnergy.naturalGas * EMISSION_FACTORS.naturalGas);
+  const householdSize = Math.max(1, Number(homeEnergy.householdSize) || 1);
+  const homeElectricityEmissions = ((Number(homeEnergy.electricity) || 0) * EMISSION_FACTORS.electricity);
+  const homeGasEmissions = ((Number(homeEnergy.naturalGas) || 0) * EMISSION_FACTORS.naturalGas);
   const homeEnergyEmissions = (homeElectricityEmissions + homeGasEmissions) / householdSize;
 
   // 3. Diet and Lifestyle Emissions
-  const dietEmissions = EMISSION_FACTORS.diet[dietLifestyle.dietType || 'meat-moderate'];
-  const consumptionEmissions = EMISSION_FACTORS.consumption[dietLifestyle.consumptionLevel || 'medium'];
+  const dietEmissions = EMISSION_FACTORS.diet[dietLifestyle.dietType as keyof typeof EMISSION_FACTORS.diet] || EMISSION_FACTORS.diet['meat-moderate'];
+  const consumptionEmissions = EMISSION_FACTORS.consumption[dietLifestyle.consumptionLevel as keyof typeof EMISSION_FACTORS.consumption] || EMISSION_FACTORS.consumption['medium'];
   const dietLifestyleEmissions = dietEmissions + consumptionEmissions;
 
   const total = transportEmissions + homeEnergyEmissions + dietLifestyleEmissions;

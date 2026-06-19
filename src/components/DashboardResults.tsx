@@ -37,20 +37,20 @@ export default function DashboardResults({
   const totalTonnes = breakdown.total / 1000;
 
   // Preparing data for Pie Chart
-  const pieData = [
+  const pieData = React.useMemo(() => [
     { name: 'Transport & Flights', value: breakdown.transport, color: CATEGORY_COLORS.transport },
     { name: 'Utilities & Home Energy', value: breakdown.homeEnergy, color: CATEGORY_COLORS.homeEnergy },
     { name: 'Diet & Lifestyle Habits', value: breakdown.dietLifestyle, color: CATEGORY_COLORS.dietLifestyle }
-  ].filter(item => item.value > 0);
+  ].filter(item => item.value > 0), [breakdown]);
 
   // Preparing data for comparisons
-  const barData = insights.comparisons || [
+  const barData = React.useMemo(() => insights.comparisons || [
     { label: 'Your Footprint', value: parseFloat(totalTonnes.toFixed(2)) },
     { label: 'World Average', value: 4.7 },
     { label: 'UK Average', value: 6.5 },
     { label: 'US Average', value: 16.0 },
     { label: 'Sustainable Target', value: 2.0 }
-  ];
+  ], [insights.comparisons, totalTonnes]);
 
   // Helper to check if an action item is already pledged
   const isPledged = (title: string) => {
