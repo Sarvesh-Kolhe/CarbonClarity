@@ -1,0 +1,47 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,600;1,700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Cormorant Garamond", serif;
+  --font-serif: "Cormorant Garamond", serif;
+  --font-mono: "JetBrains Mono", monospace;
+  
+  --color-brand-green-50: #f5f5f0;
+  --color-brand-green-100: #e5e5dc;
+  --color-brand-green-200: #c6c6b4;
+  --color-brand-green-500: #8b8b6b;
+  --color-brand-green-600: #5a5a40;
+  --color-brand-green-750: #4a4a35;
+  --color-brand-green-700: #3c3c32;
+}
+
+/* Custom visual styles for smooth interactive transitions */
+html, body, #root {
+  font-family: var(--font-sans);
+  background-color: #f5f5f0;
+  color: #3c3c32;
+  min-height: 100vh;
+}
+
+/* Cormorant Garamond specific styling helper */
+.serif {
+  font-family: var(--font-display);
+}
+
+.card {
+  background: #ffffff;
+  border-radius: 32px;
+  border: 1px solid #e5e5dc;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+}
+
+.pill {
+  background: #ffffff;
+  border: 1px solid #e5e5dc;
+  border-radius: 999px;
+  padding: 10px 20px;
+  transition: all 0.2s;
+}
+
+

@@ -1,0 +1,6 @@
+{
+  "name": "CarbonClarity",
+  "description": "Calculate your carbon footprint, visualize emissions, and receive personalized AI action plans and insights to reduce your dynamic footprint.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
